@@ -327,12 +327,20 @@ function main(config) {
 
   // Service groups expose every node directly, so each service can be
   // switched independently without opening the nested node-selection group.
-  const candidates = [GROUPS.select, GROUPS.direct];
+  const candidates = [GROUPS.select, ...proxyNames, "DIRECT"];
 
   for (const key of ["telegram", "google", "meta", "crypto"]) {
     ensureGroup(config, GROUPS[key], ICONS[key], candidates, true);
   }
-  ensureGroup(config, GROUPS.ai, ICONS.ai, [GROUPS.select, GROUPS.direct], true);
+  ensureGroup(config, GROUPS.ai, ICONS.ai, candidates, true);
+
+  // Keep the direct group at the bottom of the proxy-group list.
+  const groups = groupsOf(config);
+  const directIndex = groups.findIndex((group) => group?.name === GROUPS.direct);
+  if (directIndex >= 0 && directIndex !== groups.length - 1) {
+    const [directGroup] = groups.splice(directIndex, 1);
+    groups.push(directGroup);
+  }
 
   const rules = [
     "AND,((DST-PORT,443),(NETWORK,UDP)),REJECT",

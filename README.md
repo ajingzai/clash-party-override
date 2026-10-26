@@ -31,8 +31,8 @@ default target. You can choose another node for each group in Clash Party.
 - Fills missing DNS fields with fake-ip mode, domestic DoH for local resolution,
   and overseas DoH rules for non-China domains.
 - Keeps any existing DNS fields and only adds defaults that are absent.
-- Each service group uses `节点选择` plus `直连`, so node selection is managed
-  in one place.
+- Each service group contains `节点选择`, every individual node, and `DIRECT`.
+- The `直连` group is kept at the bottom of the proxy-group list.
 - Does not create automatic-test, fallback, or country/region proxy groups.
 
 ## Rule providers
