@@ -199,10 +199,11 @@ function findSelector(config) {
   );
 }
 
-function ensureGroup(config, name, icon, proxies) {
+function ensureGroup(config, name, icon, proxies, replaceProxies = false) {
   const group = groupsOf(config).find((item) => item && item.name === name);
   if (group) {
     if (!group.icon) group.icon = icon;
+    if (replaceProxies) group.proxies = unique(proxies);
     return;
   }
 
@@ -305,10 +306,12 @@ function main(config) {
     ["DIRECT"]
   );
 
-  const candidates = [GROUPS.select, GROUPS.direct];
+  // Service groups expose every node directly, so each service can be
+  // switched independently without opening the nested node-selection group.
+  const candidates = proxyNames.length > 0 ? [...proxyNames, "DIRECT"] : ["DIRECT"];
 
   for (const key of ["telegram", "google", "meta", "crypto"]) {
-    ensureGroup(config, GROUPS[key], ICONS[key], candidates);
+    ensureGroup(config, GROUPS[key], ICONS[key], candidates, true);
   }
 
   const rules = [
