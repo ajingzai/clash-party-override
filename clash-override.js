@@ -281,7 +281,6 @@ function main(config) {
   ensureProviders(config);
   ensureDns(config);
 
-  const existing = findSelector(config);
   const proxyNames = Array.isArray(config.proxies)
     ? unique(
         config.proxies
@@ -290,6 +289,15 @@ function main(config) {
       )
     : [];
 
+  // Keep every usable node in one manual selection group. Service groups point
+  // to this group instead of falling back to the first node only.
+  ensureGroup(
+    config,
+    GROUPS.select,
+    ICONS.select,
+    proxyNames.length > 0 ? [...proxyNames, "DIRECT"] : ["DIRECT"]
+  );
+
   ensureGroup(
     config,
     GROUPS.direct,
@@ -297,8 +305,7 @@ function main(config) {
     ["DIRECT"]
   );
 
-  const fallback = existing ? existing.name : proxyNames[0] || "DIRECT";
-  const candidates = existing ? [existing.name, GROUPS.direct] : [fallback];
+  const candidates = [GROUPS.select, GROUPS.direct];
 
   for (const key of ["telegram", "google", "meta", "crypto"]) {
     ensureGroup(config, GROUPS[key], ICONS[key], candidates);
@@ -323,11 +330,11 @@ function main(config) {
     "RULE-SET,cp-bybit,Crypto",
     "RULE-SET,cp-category-cryptocurrency,Crypto",
     ...EXTRA_RULES,
-    "RULE-SET,cp-geolocation-!cn,__DEFAULT__",
+    "RULE-SET,cp-geolocation-!cn,节点选择",
     "RULE-SET,cp-cn,直连",
     "GEOIP,CN,直连",
-    "MATCH,__DEFAULT__",
-  ].map((rule) => rule.replace("__DEFAULT__", fallback));
+    "MATCH,节点选择",
+  ];
 
   replaceRules(config, rules);
   return config;
