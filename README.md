@@ -1,9 +1,11 @@
 # Clash Party Override
 
-Clash Party / Mihomo JavaScript override for four selectable proxy groups:
+Clash Party / Mihomo JavaScript override for direct traffic, DNS defaults, and
+four selectable proxy groups:
 
 | Group | Covered services |
 | --- | --- |
+| 直连 | Private/LAN addresses and mainland China domains (GEOIP CN fallback) |
 | Telegram | Telegram |
 | Google | Google |
 | Meta | Facebook, Instagram, Threads, WhatsApp, Messenger, Oculus, Meta AI, Muse |
@@ -19,6 +21,15 @@ Clash Party / Mihomo JavaScript override for four selectable proxy groups:
 The override detects an existing `select` proxy group and reuses it as the
 default target. You can choose another node for each group in Clash Party.
 
+## Direct and DNS
+
+- Adds a `直连` group that always contains `DIRECT`.
+- Sends local, LAN, and mainland China traffic to `直连`.
+- Sends other overseas domains to the detected default proxy group.
+- Fills missing DNS fields with fake-ip mode, domestic DoH for local resolution,
+  and overseas DoH rules for non-China domains.
+- Keeps any existing DNS fields and only adds defaults that are absent.
+
 ## Rule providers
 
 The domain rules use the public
@@ -30,6 +41,9 @@ The domain rules use the public
 - `meta`
 - `binance`
 - `bybit`
+- `private`
+- `cn`
+- `geolocation-!cn`
 
 ## Requirements
 
