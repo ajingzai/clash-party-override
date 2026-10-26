@@ -10,6 +10,7 @@ four selectable service groups:
 | Google | Google |
 | Meta | Facebook, Instagram, Threads, WhatsApp, Messenger, Oculus, Meta AI, Muse |
 | Crypto | Binance, Bybit, OKX, Coinbase, Kraken, Gate, Bitget, HTX, KuCoin, MEXC, CoinGecko, CoinMarketCap |
+| AI | Gemini, Grok, ChatGPT/OpenAI, Claude/Anthropic |
 
 ## Usage
 
@@ -30,6 +31,8 @@ default target. You can choose another node for each group in Clash Party.
 - Fills missing DNS fields with fake-ip mode, domestic DoH for local resolution,
   and overseas DoH rules for non-China domains.
 - Keeps any existing DNS fields and only adds defaults that are absent.
+- Each service group uses `节点选择` plus `直连`, so node selection is managed
+  in one place.
 - Does not create automatic-test, fallback, or country/region proxy groups.
 
 ## Rule providers

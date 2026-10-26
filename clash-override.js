@@ -8,6 +8,7 @@ const GROUPS = {
   google: "Google",
   meta: "Meta",
   crypto: "Crypto",
+  ai: "AI",
 };
 
 const ICON_ROOT =
@@ -20,6 +21,7 @@ const ICONS = {
   google: `${ICON_ROOT}/Google.png`,
   meta: `${ICON_ROOT}/Facebook.png`,
   crypto: `${ICON_ROOT}/Cryptocurrency_1.png`,
+  ai: `${ICON_ROOT}/ChatGPT.png`,
 };
 
 const PROVIDER_ROOT =
@@ -45,6 +47,11 @@ const PROVIDER_NAMES = [
   "binance",
   "bybit",
   "category-cryptocurrency",
+  "category-ai-!cn",
+  "openai",
+  "google-gemini",
+  "anthropic",
+  "xai",
 ];
 
 const PROVIDERS = Object.fromEntries(
@@ -82,6 +89,18 @@ const EXTRA_RULES = [
   "DOMAIN-SUFFIX,mexc.com,Crypto",
   "DOMAIN-SUFFIX,coingecko.com,Crypto",
   "DOMAIN-SUFFIX,coinmarketcap.com,Crypto",
+  "DOMAIN-SUFFIX,chatgpt.com,AI",
+  "DOMAIN-SUFFIX,openai.com,AI",
+  "DOMAIN-SUFFIX,oaistatic.com,AI",
+  "DOMAIN-SUFFIX,oaiusercontent.com,AI",
+  "DOMAIN-SUFFIX,gemini.google.com,AI",
+  "DOMAIN-SUFFIX,ai.google.dev,AI",
+  "DOMAIN-SUFFIX,bard.google.com,AI",
+  "DOMAIN-SUFFIX,anthropic.com,AI",
+  "DOMAIN-SUFFIX,claude.ai,AI",
+  "DOMAIN-SUFFIX,claude.com,AI",
+  "DOMAIN-SUFFIX,grok.com,AI",
+  "DOMAIN-SUFFIX,x.ai,AI",
 ];
 
 const DNS_DEFAULTS = {
@@ -308,11 +327,12 @@ function main(config) {
 
   // Service groups expose every node directly, so each service can be
   // switched independently without opening the nested node-selection group.
-  const candidates = proxyNames.length > 0 ? [...proxyNames, "DIRECT"] : ["DIRECT"];
+  const candidates = [GROUPS.select, GROUPS.direct];
 
   for (const key of ["telegram", "google", "meta", "crypto"]) {
     ensureGroup(config, GROUPS[key], ICONS[key], candidates, true);
   }
+  ensureGroup(config, GROUPS.ai, ICONS.ai, [GROUPS.select, GROUPS.direct], true);
 
   const rules = [
     "AND,((DST-PORT,443),(NETWORK,UDP)),REJECT",
@@ -326,6 +346,23 @@ function main(config) {
     "IP-CIDR6,fe80::/10,DIRECT,no-resolve",
     "GEOIP,private,DIRECT,no-resolve",
     "RULE-SET,cp-private,直连",
+    "RULE-SET,cp-category-ai-!cn,AI",
+    "RULE-SET,cp-openai,AI",
+    "RULE-SET,cp-google-gemini,AI",
+    "RULE-SET,cp-anthropic,AI",
+    "RULE-SET,cp-xai,AI",
+    "DOMAIN-SUFFIX,chatgpt.com,AI",
+    "DOMAIN-SUFFIX,openai.com,AI",
+    "DOMAIN-SUFFIX,oaistatic.com,AI",
+    "DOMAIN-SUFFIX,oaiusercontent.com,AI",
+    "DOMAIN-SUFFIX,gemini.google.com,AI",
+    "DOMAIN-SUFFIX,ai.google.dev,AI",
+    "DOMAIN-SUFFIX,bard.google.com,AI",
+    "DOMAIN-SUFFIX,anthropic.com,AI",
+    "DOMAIN-SUFFIX,claude.ai,AI",
+    "DOMAIN-SUFFIX,claude.com,AI",
+    "DOMAIN-SUFFIX,grok.com,AI",
+    "DOMAIN-SUFFIX,x.ai,AI",
     "RULE-SET,cp-telegram,Telegram",
     "RULE-SET,cp-google,Google",
     "RULE-SET,cp-meta,Meta",
