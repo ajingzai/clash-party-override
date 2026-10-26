@@ -309,13 +309,25 @@ function main(config) {
       )
     : [];
 
+  const originalSelector = groupsOf(config).find(
+    (group) => group && group.name === GROUPS.select && Array.isArray(group.proxies)
+  );
+  const selectorNodes = originalSelector
+    ? unique(
+        originalSelector.proxies.filter(
+          (name) => name !== "DIRECT" && name !== GROUPS.direct
+        )
+      )
+    : [];
+  const allNodes = unique([...proxyNames, ...selectorNodes]);
+
   // Keep every usable node in one manual selection group. Service groups point
   // to this group instead of falling back to the first node only.
   ensureGroup(
     config,
     GROUPS.select,
     ICONS.select,
-    proxyNames.length > 0 ? [...proxyNames, "DIRECT"] : ["DIRECT"]
+    allNodes.length > 0 ? [...allNodes, "DIRECT"] : ["DIRECT"]
   );
 
   ensureGroup(
@@ -327,7 +339,7 @@ function main(config) {
 
   // Service groups expose every node directly, so each service can be
   // switched independently without opening the nested node-selection group.
-  const candidates = [GROUPS.select, ...proxyNames, "DIRECT"];
+  const candidates = [GROUPS.select, ...allNodes, "DIRECT"];
 
   for (const key of ["telegram", "google", "meta", "crypto"]) {
     ensureGroup(config, GROUPS[key], ICONS[key], candidates, true);
