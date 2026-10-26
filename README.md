@@ -1,7 +1,7 @@
 # Clash Party Override
 
 Clash Party / Mihomo JavaScript override for direct traffic, DNS defaults, and
-four selectable proxy groups:
+four selectable service groups:
 
 | Group | Covered services |
 | --- | --- |
@@ -25,10 +25,12 @@ default target. You can choose another node for each group in Clash Party.
 
 - Adds a `直连` group that always contains `DIRECT`.
 - Sends local, LAN, and mainland China traffic to `直连`.
-- Sends other overseas domains to the detected default proxy group.
+- Sends other overseas domains to the existing node-selection group, or the
+  first available proxy when no selection group exists.
 - Fills missing DNS fields with fake-ip mode, domestic DoH for local resolution,
   and overseas DoH rules for non-China domains.
 - Keeps any existing DNS fields and only adds defaults that are absent.
+- Does not create automatic-test, fallback, or country/region proxy groups.
 
 ## Rule providers
 
